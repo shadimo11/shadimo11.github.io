@@ -559,11 +559,21 @@ a{color:inherit;text-decoration:none}
   transition:border-color .25s,transform .25s;
 }
 .cert-card:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.cert-card{overflow:hidden}
 .cert-card__img{
-  height:140px;background:#EFECE6;
-  display:grid;place-items:center;padding:10px;
+  height:158px;
+  background:#EFECE6;
+  padding:9px;
+  overflow:hidden;
 }
-.cert-card__img img{max-height:100%;width:auto;object-fit:contain}
+.cert-card__img img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  border-radius:4px;
+}
 .cert-card__body{padding:15px 16px 17px}
 .cert-card__body h4{
   font-size:.88rem;font-weight:500;line-height:1.38;
