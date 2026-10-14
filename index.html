@@ -559,8 +559,7 @@
 
   /* ---------- Private stats counters ---------- */
   var STATS_NS  = 'shadimo11-portfolio';
-  var STATS_API = 'https://api.counterapi.dev/v1/' + STATS_NS + '/';
-
+var STATS_API = 'https://shadimo-stats.shady-mohamed-mech.workers.dev/';
   function hit (key) {
     return fetch(STATS_API + key + '/up', { mode: 'cors' })
       .then(function (r) { return r.ok ? r.json() : null; })
