@@ -3,15 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shady Mohamed — Mechatronics Engineer</title>
+<title>Shady Mohamed · MBD &amp; Embedded Systems Engineer</title>
 <meta name="description" content="Mechatronics Engineering graduate specialising in Model-Based Design, embedded systems, EV powertrains and autonomous robotics.">
 <meta name="theme-color" content="#171614">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..700;1,8..60,200..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
-<body>
+<body id="top">
 
 <!-- ===================== TOP BAR ===================== -->
 <header class="topbar">
@@ -29,6 +31,18 @@
     <a href="#certificates">Certificates</a>
     <a href="#contact">Contact</a>
   </nav>
+
+  <!-- Private stats — hidden unless ?stats=1 -->
+  <div class="stats-inline" id="stats-inline" hidden>
+    <span class="stat-pill">
+      <span class="stat-pill__k">Views</span>
+      <span class="stat-pill__v" id="stat-views">—</span>
+    </span>
+    <span class="stat-pill">
+      <span class="stat-pill__k">CV</span>
+      <span class="stat-pill__v" id="stat-downloads">—</span>
+    </span>
+  </div>
 
   <div class="actions">
     <button class="btn" id="certs-open" type="button">
@@ -49,7 +63,7 @@
 </header>
 
 <!-- ===================== HERO ===================== -->
-<section class="hero" id="top">
+<section class="hero">
   <p class="eyebrow">Mechatronics Engineer · Model-Based Design · Embedded Systems</p>
   <h1>Shady <em>Mohamed</em></h1>
   <p class="hero-lede">
@@ -188,7 +202,7 @@
       </div>
     </article>
 
-    <!-- WITH IMAGE -->
+    <!-- WIDE WITH IMAGE -->
     <article class="card card--wide">
       <div class="card__media">
         <img src="assets/images/img-processing.jpeg" alt="Results of different image processing operations on a test image">
@@ -378,7 +392,7 @@
   </div>
 </section>
 
-<!-- ===================== PUBLICATIONS & AWARDS ===================== -->
+<!-- ===================== RECOGNITION ===================== -->
 <section class="section reveal" id="recognition">
   <div class="sec-head">
     <span class="sec-num">06</span>
@@ -543,52 +557,48 @@
     sections.forEach(function (s) { spy.observe(s); });
   }
 
-  var STATS_NS  = 'shadimo11-portfolio';   
-  var VIEWS_KEY = 'views';
-  var CV_KEY    = 'cv-downloads';
+  /* ---------- Private stats counters ---------- */
+  var STATS_NS  = 'shadimo11-portfolio';
   var STATS_API = 'https://api.counterapi.dev/v1/' + STATS_NS + '/';
 
-  function bump (key) {
-    return fetch(STATS_API + key + '/up')
+  function hit (key) {
+    return fetch(STATS_API + key + '/up', { mode: 'cors' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { return d && typeof d.count === 'number' ? d.count : null; })
       .catch(function () { return null; });
   }
   function read (key) {
-    return fetch(STATS_API + key)
+    return fetch(STATS_API + key, { mode: 'cors' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { return d && typeof d.count === 'number' ? d.count : '—'; })
       .catch(function () { return '—'; });
   }
 
-  bump(VIEWS_KEY);
+  /* Count one page view */
+  hit('views');
 
+  /* Count CV download clicks */
   document.querySelectorAll('a[href*="Shady_Mohamed_CV.pdf"]').forEach(function (a) {
     a.addEventListener('click', function () {
- 
-      fetch(STATS_API + CV_KEY + '/up', { keepalive: true }).catch(function () {});
+      try { fetch(STATS_API + 'cv-downloads/up', { keepalive: true, mode: 'cors' }); } catch (e) {}
     });
   });
 
+  /* Show stats pills in the top bar only when ?stats=1 */
   if (new URLSearchParams(location.search).has('stats')) {
-    var widget = document.getElementById('stats-widget');
-    widget.hidden = false;
-    read(VIEWS_KEY).then(function (v) { document.getElementById('stat-views').textContent = v; });
-    read(CV_KEY).then(function (v) { document.getElementById('stat-downloads').textContent = v; });
+    var box = document.getElementById('stats-inline');
+    if (box) {
+      box.hidden = false;
+      read('views').then(function (v) {
+        document.getElementById('stat-views').textContent = v;
+      });
+      read('cv-downloads').then(function (v) {
+        document.getElementById('stat-downloads').textContent = v;
+      });
+    }
   }
 })();
 </script>
-
-<aside class="stats-widget" id="stats-widget" hidden aria-label="Site statistics">
-  <div class="stats-widget__row">
-    <span class="stats-widget__k">Page views</span>
-    <span class="stats-widget__v" id="stat-views">—</span>
-  </div>
-  <div class="stats-widget__row">
-    <span class="stats-widget__k">CV downloads</span>
-    <span class="stats-widget__v" id="stat-downloads">—</span>
-  </div>
-</aside>
 
 </body>
 </html>
