@@ -542,6 +542,40 @@
     }, { rootMargin: '-45% 0px -50% 0px' });
     sections.forEach(function (s) { spy.observe(s); });
   }
+
+  var STATS_NS  = 'shadimo11-portfolio';   
+  var VIEWS_KEY = 'views';
+  var CV_KEY    = 'cv-downloads';
+  var STATS_API = 'https://api.counterapi.dev/v1/' + STATS_NS + '/';
+
+  function bump (key) {
+    return fetch(STATS_API + key + '/up')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { return d && typeof d.count === 'number' ? d.count : null; })
+      .catch(function () { return null; });
+  }
+  function read (key) {
+    return fetch(STATS_API + key)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { return d && typeof d.count === 'number' ? d.count : '—'; })
+      .catch(function () { return '—'; });
+  }
+
+  bump(VIEWS_KEY);
+
+  document.querySelectorAll('a[href*="Shady_Mohamed_CV.pdf"]').forEach(function (a) {
+    a.addEventListener('click', function () {
+ 
+      fetch(STATS_API + CV_KEY + '/up', { keepalive: true }).catch(function () {});
+    });
+  });
+
+  if (new URLSearchParams(location.search).has('stats')) {
+    var widget = document.getElementById('stats-widget');
+    widget.hidden = false;
+    read(VIEWS_KEY).then(function (v) { document.getElementById('stat-views').textContent = v; });
+    read(CV_KEY).then(function (v) { document.getElementById('stat-downloads').textContent = v; });
+  }
 })();
 </script>
 
